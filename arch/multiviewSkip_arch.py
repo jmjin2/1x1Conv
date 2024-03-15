@@ -33,6 +33,7 @@ class MultiViewSkipSR(nn.Module):
         for i in range(0, n):
             x_i = view_cat[:, i, :, :, :]
             out = self.relu(self.conv1x1(x_i))
+            out = nn.BatchNorm2d(out)
             out += identity[:, i, :, :, :]
             out = self.relu(out)
             out_l.extend(out)
