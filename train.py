@@ -12,7 +12,7 @@ import os
 from os import path as osp
 from models.model import Model
 from data.dataset import MIVDataset, MIVRecurrentDataset
-from logger import AvgTimer, init_tb_logger, get_root_logger, get_env_info
+from utils.logger import AvgTimer, init_tb_logger, get_root_logger, get_env_info
 
 def init_tb_loggers(args):
     # initialize wandb logger before tensorboard logger to allow proper sync

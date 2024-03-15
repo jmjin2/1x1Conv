@@ -5,7 +5,7 @@ import os
 import shutil
 import torch
 from arch.multiview_arch import MultiViewSR
-from util import tensor2img, read_img_seq
+from utils.util import tensor2img, read_img_seq
 
 def inference(imgs_list, imgnames, model, save_path):
     with torch.no_grad():

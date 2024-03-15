@@ -1,6 +1,6 @@
 from pathlib import Path
 from torch.utils import data as data
-from util import imfrombytes, img2tensor, FileClient
+from utils.util import imfrombytes, img2tensor, FileClient
 import random
 import torch
 

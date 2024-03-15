@@ -4,8 +4,8 @@ import torch
 from collections import OrderedDict
 from copy import deepcopy
 from torch.nn.parallel import DataParallel, DistributedDataParallel
-from lr_scheduler import CosineAnnealingRestartLR
-from logger import get_root_logger
+from utils.lr_scheduler import CosineAnnealingRestartLR
+from utils.logger import get_root_logger
 
 
 class BaseModel():
