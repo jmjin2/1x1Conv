@@ -4,10 +4,8 @@ import torch
 from collections import OrderedDict
 from copy import deepcopy
 from torch.nn.parallel import DataParallel, DistributedDataParallel
-
-from basicsr.models import lr_scheduler as lr_scheduler
-from basicsr.utils import get_root_logger
-from basicsr.utils.dist_util import master_only
+from lr_scheduler import CosineAnnealingRestartLR
+from logger import get_root_logger
 
 
 class BaseModel():
@@ -106,7 +104,7 @@ class BaseModel():
     def setup_schedulers(self):
         """Set up schedulers."""
         for optimizer in self.optimizers:
-            self.schedulers.append(lr_scheduler.CosineAnnealingRestartLR(optimizer, periods=[50000], restart_weights=[1], eta_min=1e-7))
+            self.schedulers.append(CosineAnnealingRestartLR(optimizer, periods=[50000], restart_weights=[1], eta_min=1e-7))
 
 
     def get_bare_model(self, net):
@@ -117,7 +115,6 @@ class BaseModel():
             net = net.module
         return net
 
-    @master_only
     def print_network(self, net):
         """Print the str and parameter number of a network.
 
@@ -181,7 +178,6 @@ class BaseModel():
     def get_current_learning_rate(self):
         return [param_group['lr'] for param_group in self.optimizers[0].param_groups]
 
-    @master_only
     def save_network(self, net, net_label, current_iter, param_key='params'):
         """Save networks.
 
@@ -291,7 +287,6 @@ class BaseModel():
         self._print_different_keys_loading(net, load_net, strict)
         net.load_state_dict(load_net, strict=strict)
 
-    @master_only
     def save_training_state(self, epoch, current_iter):
         """Save training states during training, which will be used for
         resuming.

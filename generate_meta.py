@@ -2,23 +2,18 @@ import os
 import os.path as osp
 from PIL import Image
 
-from basicsr.utils import scandir
-
-
 def generate_meta_info_MIV():
 
     gt_folder = 'datasets/MIV/GT'
     meta_info_txt = 'data/meta_info_MIV_GT.txt'
     idx = len(gt_folder) +1
 
-
-
     with open(meta_info_txt, 'w') as f:
         # for file in os.listdir(gt_folder):
         #     print(file)
 
         for path, _, files in os.walk(gt_folder):
-            img_list = sorted(list(scandir(path)))
+            img_list = sorted(list(os.scandir(path)))
             frame_num=0
             width=0
             height=0

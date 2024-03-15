@@ -83,48 +83,8 @@ class Model(BaseModel):
         if self.ema_decay > 0:
             self.model_ema(decay=self.ema_decay)
 
-# # Test
-#     def test(self):
-#         self.netG.eval()
-#         with torch.no_grad():
-#             self.netG_forward()
-#         self.netG.train()
-
     def current_loss(self):
         return self.l_pix
-
-#     def current_visuals(self, need_H=True):
-#         out_dict = OrderedDict()
-#         out_dict['L'] = self.L.detach()[0].float().cpu()
-#         out_dict['E'] = self.E.detach()[0].float().cpu()
-#         if need_H:
-#             out_dict['H'] = self.H.detach()[0].float().cpu()
-#         return out_dict
-
-#     def current_results(self, need_H=True):
-#         out_dict = OrderedDict()
-#         out_dict['L'] = self.L.detach().float().cpu()
-#         out_dict['E'] = self.E.detach().float().cpu()
-#         if need_H:
-#             out_dict['H'] = self.H.detach().float().cpu()
-#         return out_dict
-
-
-#     def print_network(self):
-#         msg = self.describe_network(self.netG)
-#         print(msg)
-
-#     def print_params(self):
-#         msg = self.describe_params(self.netG)
-#         print(msg)
-
-#     def info_network(self):
-#         msg = self.describe_network(self.netG)
-#         return msg
-
-#     def info_params(self):
-#         msg = self.describe_params(self.netG)
-#         return msg
     
     def save(self, epoch, current_iter):
         if hasattr(self, 'net_g_ema'):

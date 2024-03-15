@@ -12,7 +12,7 @@ import os
 from os import path as osp
 from models.model import Model
 from data.dataset import MIVDataset, MIVRecurrentDataset
-from basicsr.utils import get_root_logger, get_env_info, init_tb_logger, AvgTimer
+from logger import AvgTimer, init_tb_logger, get_root_logger, get_env_info
 
 def init_tb_loggers(args):
     # initialize wandb logger before tensorboard logger to allow proper sync
@@ -72,7 +72,7 @@ def main():
 
     # log
     log_file = osp.join(experiments_root, f"train_{args.model}_{time.strftime('%Y%m%d_%H%M%S', time.localtime())}.log")
-    logger = get_root_logger(logger_name='basicsr', log_level=logging.INFO, log_file=log_file)
+    logger = get_root_logger(log_level=logging.INFO, log_file=log_file)
     logger.info(get_env_info())
     # initialize wandb and tb loggers
     tb_logger = init_tb_loggers(args)
