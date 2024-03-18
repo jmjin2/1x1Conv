@@ -9,3 +9,5 @@ tb_logger/
 pretrained/
 
 __pycache__/
+*.py[cod]
+*$py.class
