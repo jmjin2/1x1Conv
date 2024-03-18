@@ -7,3 +7,5 @@ results/
 tb_logger/
 
 pretrained/
+
+*/__pycache__/

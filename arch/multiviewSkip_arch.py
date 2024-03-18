@@ -32,10 +32,9 @@ class MultiViewSkipSR(nn.Module):
         view_cat = torch.cat((view1, view2, view3), 2)
         for i in range(0, n):
             x_i = view_cat[:, i, :, :, :]
-            out = self.relu(self.conv1x1(x_i))
-            out = nn.BatchNorm2d(out)
+            out = self.lrelu(self.conv1x1(x_i))
             out += identity[:, i, :, :, :]
-            out = self.relu(out)
+            out = self.lrelu(out)
             out_l.extend(out)
         output = torch.stack(out_l, dim=0)
         output = torch.unsqueeze(output, 0)
