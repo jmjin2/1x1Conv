@@ -33,6 +33,7 @@ def main():
     parser.add_argument('--num_feat', type=int, default=64)
     parser.add_argument('--num_block', type=int, default=15)
     parser.add_argument('--pretrained_path', type=str)
+    parser.add_argument('--iteration', type=int, default=50000)
     args = parser.parse_args()
 
     os.makedirs(args.save_path, exist_ok=True)
@@ -87,7 +88,7 @@ def main():
                               pin_memory=True)
     
     num_iter_per_epoch = len(train_set)
-    total_iters = 50000
+    total_iters = args.iteration
     total_epochs = math.ceil(total_iters / (num_iter_per_epoch))
     logger.info('Training statistics:'
                         f'\n\tNumber of train images: {len(train_set)}'
