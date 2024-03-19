@@ -19,11 +19,8 @@ class MultiViewSkipSR(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x1, x2, x3):
-        b, n, c, h, w = x1.size()
-        identity = x2
-        identity = torch.squeeze(identity)
-        identity = F.interpolate(identity, scale_factor=4, mode='bicubic')
-        identity = torch.unsqueeze(identity, 0)
+        b, n, c, h, w = x2.size()
+        x_lq = x2
         out_l = []
         view1 = self.basicvsr(x1)
         view2 = self.basicvsr(x2)
@@ -33,10 +30,10 @@ class MultiViewSkipSR(nn.Module):
         for i in range(0, n):
             x_i = view_cat[:, i, :, :, :]
             out = self.lrelu(self.conv1x1(x_i))
-            out += identity[:, i, :, :, :]
-            out = self.lrelu(out)
             out_l.extend(out)
         output = torch.stack(out_l, dim=0)
-        output = torch.unsqueeze(output, 0)
+        output.unsqueeze(0)
+        print(output.shape)
+        x = F.interpolate(x_lq, size=(c, h, w), mode='trilinear', align_corners=False)
 
-        return output
+        return output + x

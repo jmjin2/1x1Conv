@@ -11,3 +11,9 @@ pretrained/
 __pycache__/
 *.py[cod]
 *$py.class
+
+data/__pycache__/
+
+models/__pycache__/
+
+
