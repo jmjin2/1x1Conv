@@ -5,6 +5,7 @@ from torch.optim import Adam
 from models.base_model import BaseModel
 from arch.multiview_arch import MultiViewSR
 from arch.multiviewSkip_arch import MultiViewSkipSR
+from utils.util import CharbonnierLoss
 
 class Model(BaseModel):
     def __init__(self, opt):
@@ -38,7 +39,7 @@ class Model(BaseModel):
             self.net_g_ema.eval()
 
         # define losses
-        self.cri_pix = nn.MSELoss().to(self.device)
+        self.cri_pix = CharbonnierLoss().to(self.device)
 
         if self.cri_pix is None and self.cri_perceptual is None:
             raise ValueError('Both pixel and perceptual losses are None.')
