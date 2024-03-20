@@ -1,6 +1,9 @@
 import torch
 from torch import nn as nn
 from .basicvsr_arch import BasicVSR
+from utils.util import tensor2img
+import cv2
+import os
 
 class MultiViewSR(nn.Module):
 
@@ -16,6 +19,7 @@ class MultiViewSR(nn.Module):
         # activation functions
         self.lrelu = nn.LeakyReLU(negative_slope=0.1, inplace=True)
         self.relu = nn.ReLU(inplace=True)
+        self.imgname = 0
 
     def forward(self, x1, x2, x3):
         b, n, c, h, w = x1.size()
@@ -31,5 +35,10 @@ class MultiViewSR(nn.Module):
             out_l.extend(out)
         output = torch.stack(out_l, dim=0)
         output.unsqueeze(0)
+
+        imgOutput = tensor2img(output)
+        save_path = './results/train/multiview'
+        cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_output.png'), imgOutput)
+        self.imgname += 1
 
         return output

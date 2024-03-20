@@ -1,2 +1,4 @@
 Dataset: Mpeg immersive video
-BasicVSR
+""
+Training image sample save on result/train
+
