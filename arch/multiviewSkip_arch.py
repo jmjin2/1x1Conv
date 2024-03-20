@@ -43,7 +43,7 @@ class MultiViewSkipSR(nn.Module):
         imgX = tensor2img(x)
         imgOutput = tensor2img(output)
         imgOutX = tensor2img(output+x)
-        save_path = './results/train'
+        save_path = './results/train/multiviewskip'
         cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_x.png'), imgX)
         cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_output.png'), imgOutput)
         cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_output+x.png'), imgOutX)
