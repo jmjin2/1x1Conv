@@ -34,8 +34,6 @@ def main():
     parser.add_argument('--iteration', type=int, default=50000)
     args = parser.parse_args()
 
-    os.makedirs(args.save_path, exist_ok=True)
-
     seed = random.randint(1, 10000)
     print('Random seed: {}'.format(seed))
     random.seed(seed)
