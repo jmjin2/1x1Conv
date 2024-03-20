@@ -72,8 +72,7 @@ class Model(BaseModel):
         self.optimizer_g.zero_grad()
         self.output = self.net_g(self.lq1, self.lq2, self.lq3)
         l_total = 0
-        # print(self.output.shape)
-        # print(self.gt.shape)
+
         l_pix = self.cri_pix(self.output, self.gt)
         print(l_pix)
 

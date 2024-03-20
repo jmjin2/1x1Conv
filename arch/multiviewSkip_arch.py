@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .basicvsr_arch import BasicVSR
+from utils.util import tensor2img
+import cv2
+import os
 
 class MultiViewSkipSR(nn.Module):
 
@@ -17,6 +20,7 @@ class MultiViewSkipSR(nn.Module):
         # activation functions
         self.lrelu = nn.LeakyReLU(negative_slope=0.1, inplace=False)
         self.relu = nn.ReLU(inplace=True)
+        self.imgname = 0
 
     def forward(self, x1, x2, x3):
         b, n, _, _, _ = x2.size()
@@ -35,4 +39,14 @@ class MultiViewSkipSR(nn.Module):
         output = torch.unsqueeze(output, 0)
         _, _, c, h, w = output.shape
         x = F.interpolate(x_lq, size=(c, h, w), mode='trilinear', align_corners=False)
+
+        imgX = tensor2img(x)
+        imgOutput = tensor2img(output)
+        imgOutX = tensor2img(output+x)
+        save_path = './results/train'
+        cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_x.png'), imgX)
+        cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_output.png'), imgOutput)
+        cv2.imwrite(os.path.join(save_path, f'{str(self.imgname)}_output+x.png'), imgOutX)
+        self.imgname += 1
+        
         return output + x
