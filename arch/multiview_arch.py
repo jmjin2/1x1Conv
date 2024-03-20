@@ -27,7 +27,7 @@ class MultiViewSR(nn.Module):
         view_cat = torch.cat((view1, view2, view3), 2)
         for i in range(0, n):
             x_i = view_cat[:, i, :, :, :]
-            out = self.relu(self.conv1x1(x_i))
+            out = self.lrelu(self.conv1x1(x_i))
             out_l.extend(out)
         output = torch.stack(out_l, dim=0)
         output.unsqueeze(0)

@@ -24,8 +24,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--input_path', type=str, default='data/train', help='input train image folder')
-    parser.add_argument(
-        '--save_path', type=str, default='results/1x1_models', help='directory to save the trained model')
     parser.add_argument('--model', type=str, default='MultiviewSR')
     parser.add_argument('--basicvsr_path', type=str, default="pretrained/basicVSR/BasicVSR_REDS4.pth")
     parser.add_argument('--spynet_path', type=str, default="pretrained/flownet/spynet_sintel_final-3d2a1287.pth")

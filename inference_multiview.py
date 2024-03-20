@@ -20,11 +20,11 @@ def inference(imgs_list, imgnames, model, save_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default='experiments/MultiviewSkipSR/net_g_10000.pth')
+    parser.add_argument('--model_path', type=str, default='experiments/MultiviewSR/net_g_50000.pth')
     parser.add_argument(
-        '--input_path', type=str, default='datasets/MIV_val/MIVx4/(E01)Frog/IntelFrog_Textures', help='input test image folder')
-    parser.add_argument('--save_path', type=str, default='./results/skip_models/Frog/10000', help='save image path')
-    parser.add_argument('--interval', type=int, default=15, help='interval size')
+        '--input_path', type=str, default='datasets/MIV_val/MIVx4/(E02)Carpark/all_textures', help='input test image folder')
+    parser.add_argument('--save_path', type=str, default='./results/1x1_models/carpark/50000_7', help='save image path')
+    parser.add_argument('--interval', type=int, default=7, help='interval size')
     args = parser.parse_args()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
