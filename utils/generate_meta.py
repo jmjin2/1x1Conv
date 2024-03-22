@@ -1,6 +1,7 @@
 import os
 import os.path as osp
 from PIL import Image
+from util import scandir
 
 def generate_meta_info_MIV():
 
@@ -13,7 +14,7 @@ def generate_meta_info_MIV():
         #     print(file)
 
         for path, _, files in os.walk(gt_folder):
-            img_list = sorted(list(os.scandir(path)))
+            img_list = sorted(list(scandir(path)))
             frame_num=0
             width=0
             height=0
