@@ -3,7 +3,6 @@ import torch.nn as nn
 from torch.optim import Adam
 
 from models.base_model import BaseModel
-from arch.multiview_arch import MultiViewSR
 from arch.multiviewSkip_arch import MultiViewSkipSR
 from utils.util import CharbonnierLoss
 
@@ -12,10 +11,7 @@ class Model(BaseModel):
         super(Model, self).__init__(opt)
 
         # define network
-        if opt.model == "MultiviewSR":
-            self.net_g = MultiViewSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
-        elif opt.model == "MultiviewSkipSR":
-            self.net_g = MultiViewSkipSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+        self.net_g = MultiViewSkipSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
         self.print_network(self.net_g)
 
         if self.is_train:
@@ -26,10 +22,7 @@ class Model(BaseModel):
 
         self.ema_decay = 0.999
         if self.ema_decay > 0:
-            if opt.model == "MultiviewSR":
-                self.net_g_ema = MultiViewSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
-            elif opt.model == "MultiviewSkipSR":
-                self.net_g_ema = MultiViewSkipSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+            self.net_g_ema = MultiViewSkipSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
             # load pretrained model
             load_path = self.opt.pretrained_path
             if load_path is not None:
@@ -73,7 +66,6 @@ class Model(BaseModel):
         self.output = self.net_g(self.lq1, self.lq2, self.lq3)
         l_total = 0
         l_pix = self.cri_pix(self.output, self.gt)
-        print(l_pix)
 
         l_total += l_pix
         l_total.backward()
