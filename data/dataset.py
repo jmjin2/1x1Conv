@@ -23,22 +23,22 @@ class MIVDataset(data.Dataset):
             self.file_client = FileClient('disk')
 
         key = self.keys[index]
-        clip_name, subfolder, view, frame_name = key.split('\\')  # key example: 000/00000000
+        clip_name, view, frame_name = key.split('\\')  # key example: 000/00000000
         
-        img_gt_path = self.gt_root / clip_name / subfolder / 'v1' / f'{frame_name}.png'
+        img_gt_path = self.gt_root / clip_name / 'v1' / f'{frame_name}.png'
         img_bytes = self.file_client.get(img_gt_path, 'gt')
         img_gt = imfrombytes(img_bytes, float32=True)
 
         img_lqs = []
-        img_lq1_path = self.lq_root / clip_name / subfolder / 'v0' / f'{frame_name}.png'
+        img_lq1_path = self.lq_root / clip_name / 'v0' / f'{frame_name}.png'
         img_bytes = self.file_client.get(img_lq1_path, 'lq1')
         img_lqs.append(imfrombytes(img_bytes, float32=True))
 
-        img_lq2_path = self.lq_root / clip_name / subfolder / 'v1' / f'{frame_name}.png'
+        img_lq2_path = self.lq_root / clip_name / 'v1' / f'{frame_name}.png'
         img_bytes = self.file_client.get(img_lq2_path, 'lq2')
         img_lqs.append(imfrombytes(img_bytes, float32=True))
 
-        img_lq3_path = self.lq_root / clip_name / subfolder / 'v2' / f'{frame_name}.png'
+        img_lq3_path = self.lq_root / clip_name / 'v2' / f'{frame_name}.png'
         img_bytes = self.file_client.get(img_lq3_path, 'lq3')
         img_lqs.append(imfrombytes(img_bytes, float32=True))
         img_gt, img_lqs = paired_random_crop(img_gt, img_lqs, 256, 4, img_gt_path)
@@ -77,7 +77,7 @@ class MIVRecurrentDataset(data.Dataset):
             self.file_client = FileClient('disk')
 
         key = self.keys[index]
-        clip_name, subfolder, view, frame_name, frame_num = key.split('\\')  # key example: 000/00000000
+        clip_name, view, frame_name, frame_num = key.split('\\')  # key example: 000/00000000
 
         # determine the neighboring frames
         interval = random.choice(self.interval_list)
@@ -97,22 +97,22 @@ class MIVRecurrentDataset(data.Dataset):
         img_gts = []
      
         for neighbor in neighbor_list:
-            img_gt_path = self.gt_root / clip_name / subfolder / 'v1' / f'{frame_name}.png'
+            img_gt_path = self.gt_root / clip_name / 'v1' / f'{frame_name}.png'
             img_bytes = self.file_client.get(img_gt_path, 'gt')
             img_gt = imfrombytes(img_bytes, float32=True)
             img_gts.append(img_gt)
 
-            img_lq1_path = self.lq_root / clip_name / subfolder / 'v0' / f'{frame_name}.png'
+            img_lq1_path = self.lq_root / clip_name / 'v0' / f'{frame_name}.png'
             img_bytes = self.file_client.get(img_lq1_path, 'lq1')
             img_lq1 = imfrombytes(img_bytes, float32=True)
             img_lq1s.append(img_lq1)
 
-            img_lq2_path = self.lq_root / clip_name / subfolder / 'v1' / f'{frame_name}.png'
+            img_lq2_path = self.lq_root / clip_name / 'v1' / f'{frame_name}.png'
             img_bytes = self.file_client.get(img_lq2_path, 'lq2')
             img_lq2 = imfrombytes(img_bytes, float32=True)
             img_lq2s.append(img_lq2)
 
-            img_lq3_path = self.lq_root / clip_name / subfolder / 'v2' / f'{frame_name}.png'
+            img_lq3_path = self.lq_root / clip_name / 'v2' / f'{frame_name}.png'
             img_bytes = self.file_client.get(img_lq3_path, 'lq3')
             img_lq3 = imfrombytes(img_bytes, float32=True)
             img_lq3s.append(img_lq3)

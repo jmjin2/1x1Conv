@@ -104,7 +104,7 @@ class BaseModel():
     def setup_schedulers(self):
         """Set up schedulers."""
         for optimizer in self.optimizers:
-            self.schedulers.append(CosineAnnealingRestartLR(optimizer, periods=[50000], restart_weights=[1], eta_min=1e-7))
+            self.schedulers.append(CosineAnnealingRestartLR(optimizer, periods=[300000], restart_weights=[1], eta_min=1e-7))
 
 
     def get_bare_model(self, net):
