@@ -3,7 +3,6 @@ from torch import nn as nn
 from .basicvsr_arch import BasicVSR
 
 class MultiViewSR(nn.Module):
-
     def __init__(self, num_feat=64, num_block=15, load_path=None, spynet_path=None):
         super().__init__()
         self.num_feat = num_feat
@@ -15,7 +14,6 @@ class MultiViewSR(nn.Module):
         self.conv1x1 = nn.Conv2d(9, 3, 1, 1, 0)
         # activation functions
         self.lrelu = nn.LeakyReLU(negative_slope=0.1, inplace=True)
-        self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x1, x2, x3):
         b, n, c, h, w = x1.size()
