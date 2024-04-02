@@ -20,10 +20,10 @@ def inference(imgs_list, imgnames, model, save_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default='experiments/MultiviewSR_MSE/net_g_30000.pth')
+    parser.add_argument('--model_path', type=str, default='experiments/MultiviewSR_MSE/net_g_50000.pth')
     parser.add_argument(
-        '--input_path', type=str, default='datasets/MIV_val/MIVx4/(E02)Carpark/all_textures', help='input test image folder')
-    parser.add_argument('--save_path', type=str, default='./results/1x1_models/Carpark/30000_mse', help='save image path')
+        '--input_path', type=str, default='datasets/XR_dataset/x4/object/ball', help='input test image folder')
+    parser.add_argument('--save_path', type=str, default='./results/1x1_models/XR/ball/50000_MSE', help='save image path')
     parser.add_argument('--interval', type=int, default=15, help='interval size')
     args = parser.parse_args()
 

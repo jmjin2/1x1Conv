@@ -24,14 +24,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--input_path', type=str, default='data/train', help='input train image folder')
-    parser.add_argument('--model', type=str, default='MultiviewSR')
+    parser.add_argument('--model', type=str, default='MultiviewSkipSR')
     parser.add_argument('--basicvsr_path', type=str, default="pretrained/basicVSR/BasicVSR_REDS4.pth")
     parser.add_argument('--spynet_path', type=str, default="pretrained/flownet/spynet_sintel_final-3d2a1287.pth")
     parser.add_argument('--resume_state_path', type=str)
     parser.add_argument('--num_feat', type=int, default=64)
     parser.add_argument('--num_block', type=int, default=15)
     parser.add_argument('--pretrained_path', type=str)
-    parser.add_argument('--iteration', type=int, default=50000)
+    parser.add_argument('--iteration', type=int, default=300000)
     args = parser.parse_args()
 
     seed = random.randint(1, 10000)
@@ -52,9 +52,9 @@ def main():
         resume_state = torch.load(resume_state_path, map_location=lambda storage, loc: storage.cuda(device_id))
  
     # mkdir
+    experiments_root = osp.join('.', 'experiments')
+    experiments_root = osp.join(experiments_root, args.model)
     if resume_state is None:
-        experiments_root = osp.join('.', 'experiments')
-        experiments_root = osp.join(experiments_root, args.model)
         if osp.exists(experiments_root):
             new_name = experiments_root + '_archived_' + time.strftime('%Y%m%d_%H%M%S', time.localtime())
             print(f'Path already exists. Rename it to {new_name}', flush=True)
