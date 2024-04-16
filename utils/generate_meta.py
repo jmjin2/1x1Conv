@@ -5,8 +5,8 @@ from util import scandir
 
 def generate_meta_info_MIV():
 
-    gt_folder = 'datasets/MIV/GT'
-    meta_info_txt = 'data/meta_info_MIV_GT.txt'
+    gt_folder = 'datasets/MIV/GT/support'
+    meta_info_txt = 'data/meta_info_MIV_GT_support.txt'
     idx = len(gt_folder) +1
 
     with open(meta_info_txt, 'w') as f:
