@@ -5,8 +5,8 @@ from util import scandir
 
 def generate_meta_info_MIV():
 
-    gt_folder = 'datasets/MIV/GT/support'
-    meta_info_txt = 'data/meta_info_MIV_GT_support.txt'
+    gt_folder = 'datasets/MIV/GT/target'
+    meta_info_txt = 'data/meta_info_MIV_GT_target.txt'
     idx = len(gt_folder) +1
 
     with open(meta_info_txt, 'w') as f:
@@ -20,7 +20,7 @@ def generate_meta_info_MIV():
             height=0
             n_channel=0
             for _, img_path in enumerate(img_list):
-                if img_path.endswith('.png'):
+                if img_path.endswith('.jpg'):
                     img = Image.open(osp.join(path, img_path))  # lazy load
                     width, height = img.size
                     mode = img.mode
