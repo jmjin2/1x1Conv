@@ -5,59 +5,6 @@ import random
 import torch
 import os
 
-class MIVDataset(data.Dataset):
-    def __init__(self):
-        super(MIVDataset, self).__init__()
-        self.gt_root, self.lq_root = Path("datasets/MIV/GT"), Path("datasets/MIV/MIVx4")
-
-        self.keys = []
-        with open('data/meta_info_MIV_GT.txt', 'r') as fin:
-            for line in fin:
-                folder, frame_num, _ = line.split(' ')
-                self.keys.extend([f'{folder}\\{i:08d}' for i in range(int(frame_num))])
-
-        # file client (io backend)
-        self.file_client = None
-
-    def __getitem__(self, index):
-        if self.file_client is None:
-            self.file_client = FileClient('disk')
-
-        key = self.keys[index]
-        clip_name, subfolder, subset, view, frame_name = key.split('\\')  # key example: 000/00000000
-        
-        img_gt_path = self.gt_root / clip_name / 'v1' / f'{frame_name}.png'
-        img_bytes = self.file_client.get(img_gt_path, 'gt')
-        img_gt = imfrombytes(img_bytes, float32=True)
-
-        img_lqs = []
-        img_lq1_path = self.lq_root / clip_name / 'v0' / f'{frame_name}.png'
-        img_bytes = self.file_client.get(img_lq1_path, 'lq1')
-        img_lqs.append(imfrombytes(img_bytes, float32=True))
-
-        img_lq2_path = self.lq_root / clip_name / 'v1' / f'{frame_name}.png'
-        img_bytes = self.file_client.get(img_lq2_path, 'lq2')
-        img_lqs.append(imfrombytes(img_bytes, float32=True))
-
-        img_lq3_path = self.lq_root / clip_name / 'v2' / f'{frame_name}.png'
-        img_bytes = self.file_client.get(img_lq3_path, 'lq3')
-        img_lqs.append(imfrombytes(img_bytes, float32=True))
-
-        img_gt, img_lqs = paired_random_crop(img_gt, img_lqs, 256, 4, img_gt_path)
-
-        img_gt = img2tensor(img_gt)
-        img_lqs = img2tensor(img_lqs)
-        # img_lqs: (t, c, h, w)
-        # img_flows: (t, 2, h, w)
-        # img_gt: (c, h, w)
-        # key: str
-
-        return {'lq1': img_lqs[0], 'lq2': img_lqs[1], 'lq3': img_lqs[2], 'gt': img_gt, 'key': key}
-
-    def __len__(self):
-        return len(self.keys)
-    
-
 class MIVRecurrentDataset(data.Dataset):
     def __init__(self):
         super(MIVRecurrentDataset, self).__init__()
