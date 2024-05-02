@@ -13,10 +13,10 @@ class MIVRecurrentDataset(data.Dataset):
 
         self.keys = []
         self.support_view = []
-        with open('data/meta_info_MIV_GT_target.txt', 'r') as fin:
+        with open('data/meta_info_MIV_GT.txt', 'r') as fin:
             for line in fin:
                 folder, frame_num, _ = line.split(' ')
-                self.keys.extend([f'{folder}\\{i:08d}\\{frame_num}' for i in range(int(frame_num))])
+                self.keys.extend([f'{folder}/{i:08d}/{frame_num}' for i in range(int(frame_num))])
         
         # file client (io backend)
         self.file_client = None
@@ -27,8 +27,8 @@ class MIVRecurrentDataset(data.Dataset):
             self.file_client = FileClient('disk')
 
         key = self.keys[index]
-        clip_name, texture, view_set, view, frame_name, frame_num = key.split('\\')  # key example: 000/00000000
-        view_list = os.listdir(self.gt_root / "support" / clip_name / texture/ view_set)
+        clip_name, texture, view, frame_name, frame_num = key.split('/')
+        view_list = os.listdir(self.gt_root / clip_name / texture)
         # determine the neighboring frames
         interval = random.choice(self.interval_list)
 
@@ -47,22 +47,22 @@ class MIVRecurrentDataset(data.Dataset):
         img_gts = []
      
         for neighbor in neighbor_list:
-            img_gt_path = self.gt_root / "target" / clip_name / texture/ view_set / view / f'{frame_name}.jpg'
+            img_gt_path = self.gt_root / clip_name / texture/ view / f'{neighbor:08d}.jpg'
             img_bytes = self.file_client.get(img_gt_path, 'gt')
             img_gt = imfrombytes(img_bytes, float32=True)
             img_gts.append(img_gt)
 
-            img_lq1_path = self.lq_root / clip_name / texture/ view_set / view_list[0] / f'{frame_name}.jpg'
+            img_lq1_path = self.lq_root / clip_name / texture/ view_list[0] / f'{neighbor:08d}.jpg'
             img_bytes = self.file_client.get(img_lq1_path, 'lq1')
             img_lq1 = imfrombytes(img_bytes, float32=True)
             img_lq1s.append(img_lq1)
 
-            img_lq2_path = self.lq_root / clip_name / texture/ view_set / view / f'{frame_name}.jpg'
+            img_lq2_path = self.lq_root / clip_name / texture/ view / f'{neighbor:08d}.jpg'
             img_bytes = self.file_client.get(img_lq2_path, 'lq2')
             img_lq2 = imfrombytes(img_bytes, float32=True)
             img_lq2s.append(img_lq2)
 
-            img_lq3_path = self.lq_root / clip_name / texture/ view_set / view_list[1] / f'{frame_name}.jpg'
+            img_lq3_path = self.lq_root / clip_name / texture/ view_list[-1] / f'{neighbor:08d}.jpg'
             img_bytes = self.file_client.get(img_lq3_path, 'lq3')
             img_lq3 = imfrombytes(img_bytes, float32=True)
             img_lq3s.append(img_lq3)
@@ -122,4 +122,3 @@ def paired_random_crop(img_gts, img_lq1s, img_lq2s, img_lq3s, gt_patch_size, sca
     if len(img_gts) == 1:
         img_gts = img_gts[0]
     return img_gts, img_lq1s, img_lq2s, img_lq3s
-
