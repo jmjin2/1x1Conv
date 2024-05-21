@@ -2,9 +2,10 @@ import argparse
 import cv2
 import glob
 import os
+
 import shutil
 import torch
-from arch.FusionB_arch import MultiViewSkipSR
+from arch.FusionA_arch import MultiViewSR
 from utils.util import tensor2img, read_img_seq
 
 def inference(imgs_list, imgnames, model, save_path):
@@ -15,22 +16,22 @@ def inference(imgs_list, imgnames, model, save_path):
     outputs = list(outputs)
     for output, imgname in zip(outputs, imgnames):
         output = tensor2img(output)
-        cv2.imwrite(os.path.join(save_path, f'{imgname}_skip.jpg'), output)
+        cv2.imwrite(os.path.join(save_path, f'{imgname}_conv1x1.jpg'), output)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default='experiments/FusionB_REDS/net_g_100000.pth')
+    parser.add_argument('--model_path', type=str, default='experiments/FusionA_C/net_g_100000.pth')
     parser.add_argument(
-        '--input_path', type=str, default='datasets/VRroom', help='input test image folder')
-    parser.add_argument('--save_path', type=str, default='./results/FusionB_Test/VRroom', help='save image path')
+        '--input_path', type=str, default='datasets/(W01)Group/textureAllViews', help='input test image folder')
+    parser.add_argument('--save_path', type=str, default='./results/FusionA_C/Group', help='save image path')
     parser.add_argument('--interval', type=int, default=15, help='interval size')
     args = parser.parse_args()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # set up model
-    model = MultiViewSkipSR(num_feat=64, num_block=30)
+    model = MultiViewSR(num_feat=64, num_block=30)
     model.load_state_dict(torch.load(args.model_path)['params'], strict=False)
     model.eval()
     model = model.to(device)
@@ -47,7 +48,7 @@ def main():
     #     video_name = os.path.splitext(os.path.split(args.input_path)[-1])[0]
     #     input_path = os.path.join('./BasicVSR_tmp', video_name)
     #     os.makedirs(os.path.join('./BasicVSR_tmp', video_name), exist_ok=True)
-    #     os.system(f'ffmpeg -i {args.input_path} -qscale:v 1 -qmin 1 -qmax 1 -vsync 0  {input_path} /{}.png')
+    #     os.system(f'ffmpeg -i {args.input_path} -qscale:v 1 -qmin 1 -qmax 1 -vsync 0  {input_path} /frame%08d.png')
 
     # load data and inference
     view_list = os.listdir(args.input_path)

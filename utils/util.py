@@ -235,3 +235,8 @@ def scandir(dir_path, suffix=None, recursive=False, full_path=False):
                     continue
 
     return _scandir(dir_path, suffix=suffix, recursive=recursive)
+
+try:
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    from torch.utils.model_zoo import load_url as load_state_dict_from_url

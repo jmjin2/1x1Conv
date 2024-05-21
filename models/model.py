@@ -3,8 +3,8 @@ import torch.nn as nn
 from torch.optim import Adam
 
 from models.base_model import BaseModel
-from arch.multiview_arch import MultiViewSR
-from arch.multiviewSkip_arch import MultiViewSkipSR
+from arch.FusionA_arch import FusionA
+from arch.FusionB_arch import FusionB
 from utils.util import CharbonnierLoss
 
 class Model(BaseModel):
@@ -12,10 +12,10 @@ class Model(BaseModel):
         super(Model, self).__init__(opt)
 
         # define network
-        if opt.model == "MultiviewSR":
-            self.net_g = MultiViewSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
-        elif opt.model == "MultiviewSkipSR":
-            self.net_g = MultiViewSkipSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+        if opt.model == "FusionA":
+            self.net_g = FusionA(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+        elif opt.model == "FusionB":
+            self.net_g = FusionB(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
         # self.print_network(self.net_g)
 
         if self.is_train:
@@ -26,10 +26,10 @@ class Model(BaseModel):
 
         self.ema_decay = 0.999
         if self.ema_decay > 0:
-            if opt.model == "MultiviewSR":
-                self.net_g_ema = MultiViewSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
-            elif opt.model == "MultiviewSkipSR":
-                self.net_g_ema = MultiViewSkipSR(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+            if opt.model == "FusionA":
+                self.net_g_ema = FusionA(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+            elif opt.model == "FusionB":
+                self.net_g_ema = FusionB(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
             
             # load pretrained model
             load_path = self.opt.pretrained_path
@@ -51,8 +51,9 @@ class Model(BaseModel):
 
     def setup_optimizers(self):
         optim_params = []
+        excluded_params = set(self.net_g.basicvsr.parameters())
         for k, v in self.net_g.named_parameters():
-            if v.requires_grad:
+            if v.requires_grad and k not in excluded_params:
                 optim_params.append(v)
 
         self.optimizer_g = Adam(optim_params, lr=1e-4,
