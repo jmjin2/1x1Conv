@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from .resnet import resnet34
 from .basicvsr_arch import BasicVSR
 
 class FusionB(nn.Module):
@@ -12,8 +13,10 @@ class FusionB(nn.Module):
         if load_path:
             self.basicvsr.load_state_dict(torch.load(load_path)['params'], strict=False)
         # 1x1 conv
-        self.conv = nn.Conv2d(9, 64, 3, 1, 1)
+        self.conv_first = nn.Conv2d(9, 64, 3, 1, 1)
         self.conv1x1 = nn.Conv2d(64, 3, 1, 1, 0)
+        # feature extract
+        self.resnet = resnet34()
         # activation functions
         self.lrelu = nn.LeakyReLU(negative_slope=0.1, inplace=False)
 
@@ -28,7 +31,8 @@ class FusionB(nn.Module):
         view_cat = torch.cat((view1, view2, view3), 2)
         for i in range(0, n):
             x_i = view_cat[:, i, :, :, :]
-            out = self.lrelu(self.conv(x_i))
+            out = self.lrelu(self.conv_first(x_i))
+            out = self.lrelu(self.resnet(out))
             out = self.lrelu(self.conv1x1(out))
             out_l.extend(out)
         output = torch.stack(out_l, dim=0)

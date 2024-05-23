@@ -17,6 +17,9 @@ class Model(BaseModel):
         elif opt.model == "FusionB":
             self.net_g = FusionB(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
         # self.print_network(self.net_g)
+        if load_path is not None:
+            load_path = self.opt.pretrained_path
+            self.load_network(self.net_g, load_path, True, 'params')
 
         if self.is_train:
             self.init_training_settings(opt)
@@ -34,7 +37,7 @@ class Model(BaseModel):
             # load pretrained model
             load_path = self.opt.pretrained_path
             if load_path is not None:
-                self.load_network(self.net_g_ema, load_path, self.opt['path'].get('strict_load_g', True), 'params_ema')
+                self.load_network(self.net_g_ema, load_path, True, 'params_ema')
             else:
                 self.model_ema(0)  # copy net_g weight
             self.net_g_ema.eval()
