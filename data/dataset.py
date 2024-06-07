@@ -8,15 +8,14 @@ import os
 class MIVRecurrentDataset(data.Dataset):
     def __init__(self):
         super(MIVRecurrentDataset, self).__init__()
-        self.gt_root, self.lq_root = Path("datasets/MIV/GT"), Path("datasets/MIV/MIVx4")
+        self.gt_root, self.lq_root = Path("datasets/Train/GT"), Path("datasets/Train/x4")
         self.num_frame = 15
 
         self.keys = []
-        self.support_view = []
-        with open('data/meta_info_MIV_GT.txt', 'r') as fin:
+        with open('data/meta_info_GT.txt', 'r') as fin:
             for line in fin:
-                folder, frame_num, _ = line.split(' ')
-                self.keys.extend([f'{folder}/{i:08d}/{frame_num}' for i in range(int(frame_num))])
+                folder, frame_num, extention, _ = line.split(' ')
+                self.keys.extend([f'{folder}/{i:08d}/{frame_num}/{extention}' for i in range(int(frame_num))])
         
         # file client (io backend)
         self.file_client = None
@@ -27,7 +26,7 @@ class MIVRecurrentDataset(data.Dataset):
             self.file_client = FileClient('disk')
 
         key = self.keys[index]
-        clip_name, texture, view, frame_name, frame_num = key.split('/')
+        clip_name, texture, view, frame_name, frame_num, extention = key.split('/')
         view_list = os.listdir(self.gt_root / clip_name / texture)
         # determine the neighboring frames
         interval = random.choice(self.interval_list)
@@ -47,22 +46,34 @@ class MIVRecurrentDataset(data.Dataset):
         img_gts = []
      
         for neighbor in neighbor_list:
-            img_gt_path = self.gt_root / clip_name / texture/ view / f'{neighbor:08d}.jpg'
+            if extention == 'jpg':
+                img_gt_path = self.gt_root / clip_name / texture/ view / f'{neighbor:08d}.jpg'
+            elif extention == 'png':
+                img_gt_path = self.gt_root / clip_name / texture/ view / f'{neighbor:08d}.png'
             img_bytes = self.file_client.get(img_gt_path, 'gt')
             img_gt = imfrombytes(img_bytes, float32=True)
             img_gts.append(img_gt)
 
-            img_lq1_path = self.lq_root / clip_name / texture/ view_list[0] / f'{neighbor:08d}.jpg'
+            if extention == 'jpg':
+                img_lq1_path = self.lq_root / clip_name / texture/ view_list[0] / f'{neighbor:08d}.jpg'
+            elif extention == 'png':
+                img_lq1_path = self.lq_root / clip_name / texture/ view_list[0] / f'{neighbor:08d}.png'
             img_bytes = self.file_client.get(img_lq1_path, 'lq1')
             img_lq1 = imfrombytes(img_bytes, float32=True)
             img_lq1s.append(img_lq1)
 
-            img_lq2_path = self.lq_root / clip_name / texture/ view / f'{neighbor:08d}.jpg'
+            if extention == 'jpg':
+                img_lq2_path = self.lq_root / clip_name / texture/ view / f'{neighbor:08d}.jpg'
+            elif extention == 'png':
+                img_lq2_path = self.lq_root / clip_name / texture/ view / f'{neighbor:08d}.png'
             img_bytes = self.file_client.get(img_lq2_path, 'lq2')
             img_lq2 = imfrombytes(img_bytes, float32=True)
             img_lq2s.append(img_lq2)
 
-            img_lq3_path = self.lq_root / clip_name / texture/ view_list[-1] / f'{neighbor:08d}.jpg'
+            if extention == 'jpg':
+                img_lq3_path = self.lq_root / clip_name / texture/ view_list[-1] / f'{neighbor:08d}.jpg'
+            elif extention == 'png':
+                img_lq3_path = self.lq_root / clip_name / texture/ view_list[-1] / f'{neighbor:08d}.png'
             img_bytes = self.file_client.get(img_lq3_path, 'lq3')
             img_lq3 = imfrombytes(img_bytes, float32=True)
             img_lq3s.append(img_lq3)

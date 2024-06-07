@@ -13,12 +13,12 @@ class Model(BaseModel):
 
         # define network
         if opt.model == "FusionA":
-            self.net_g = FusionA(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+            self.net_g = FusionA(load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
         elif opt.model == "FusionB":
-            self.net_g = FusionB(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+            self.net_g = FusionB(load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
         # self.print_network(self.net_g)
+        load_path = self.opt.pretrained_path
         if load_path is not None:
-            load_path = self.opt.pretrained_path
             self.load_network(self.net_g, load_path, True, 'params')
 
         if self.is_train:
@@ -30,9 +30,9 @@ class Model(BaseModel):
         self.ema_decay = 0.999
         if self.ema_decay > 0:
             if opt.model == "FusionA":
-                self.net_g_ema = FusionA(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+                self.net_g_ema = FusionA(load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
             elif opt.model == "FusionB":
-                self.net_g_ema = FusionB(num_feat=opt.num_feat, num_block=opt.num_block, load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
+                self.net_g_ema = FusionB(load_path=opt.basicvsr_path, spynet_path=None).to(self.device)
             
             # load pretrained model
             load_path = self.opt.pretrained_path

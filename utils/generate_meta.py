@@ -5,8 +5,8 @@ from util import scandir
 
 def generate_meta_info_MIV():
 
-    gt_folder = 'datasets/MIV/GT/target'
-    meta_info_txt = 'data/meta_info_MIV_GT_target.txt'
+    gt_folder = 'datasets/Train/GT'
+    meta_info_txt = 'data/meta_info_GT.txt'
     idx = len(gt_folder) +1
 
     with open(meta_info_txt, 'w') as f:
@@ -20,7 +20,8 @@ def generate_meta_info_MIV():
             height=0
             n_channel=0
             for _, img_path in enumerate(img_list):
-                if img_path.endswith('.jpg'):
+                if img_path.endswith('.jpg') or img_path.endswith('.png'):
+                    _, extention = img_path.split('.')
                     img = Image.open(osp.join(path, img_path))  # lazy load
                     width, height = img.size
                     mode = img.mode
@@ -32,7 +33,7 @@ def generate_meta_info_MIV():
                         raise ValueError(f'Unsupported mode {mode}.')
                     frame_num+=1
             if frame_num != 0:
-                info = f'{path[idx:]} {frame_num} ({height},{width},{n_channel})'
+                info = f'{path[idx:]} {frame_num} {extention} ({height},{width},{n_channel})'
                 print(frame_num, info)
                 f.write(f'{info}\n')
 
