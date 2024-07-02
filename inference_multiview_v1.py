@@ -5,7 +5,7 @@ import os
 
 import shutil
 import torch
-from arch.FusionA_arch import FusionA
+from arch.FusionA_arch_v1 import FusionA_v1
 from utils.util import tensor2img, read_img_seq
 
 def inference(imgs_list, imgnames, model, save_path):
@@ -16,22 +16,22 @@ def inference(imgs_list, imgnames, model, save_path):
     outputs = list(outputs)
     for output, imgname in zip(outputs, imgnames):
         output = tensor2img(output)
-        cv2.imwrite(os.path.join(save_path, f'{imgname}_FusionA.jpg'), output)
+        cv2.imwrite(os.path.join(save_path, f'{imgname}.jpg'), output)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default='experiments/FusionA_v2/net_g_45000.pth')
+    parser.add_argument('--model_path', type=str, default='experiments/FusionA_v1/net_g_10000.pth')
     parser.add_argument(
         '--input_path', type=str, default='datasets/Test/(W01)Group/textureAllViews', help='input test image folder')
-    parser.add_argument('--save_path', type=str, default='./results/FusionA/Group', help='save image path')
+    parser.add_argument('--save_path', type=str, default='./results/FusionA_v1/10/Group', help='save image path')
     parser.add_argument('--interval', type=int, default=15, help='interval size')
     args = parser.parse_args()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # set up model
-    model = FusionA()
+    model = FusionA_v1()
     model.load_state_dict(torch.load(args.model_path)['params'], strict=False)
     model.eval()
     model = model.to(device)

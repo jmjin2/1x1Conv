@@ -30,6 +30,9 @@ def main():
     parser.add_argument('--resume_state_path', type=str)
     parser.add_argument('--pretrained_path', type=str)
     parser.add_argument('--iteration', type=int, default=300000)
+    parser.add_argument('--num_feat', type=int, default=64)
+    parser.add_argument('--num_block', type=int, default=15)
+    parser.add_argument('--res_depth', type=int, default=6)
     args = parser.parse_args()
 
     seed = random.randint(1, 10000)
@@ -48,7 +51,7 @@ def main():
     else:
         device_id = torch.cuda.current_device()
         resume_state = torch.load(resume_state_path, map_location=lambda storage, loc: storage.cuda(device_id))
- 
+
     # mkdir
     experiments_root = osp.join('.', 'experiments')
     experiments_root = osp.join(experiments_root, args.model)
@@ -97,6 +100,7 @@ def main():
         logger.info(f"Resuming training from epoch: {resume_state['epoch']}, iter: {resume_state['iter']}.")
         start_epoch = resume_state['epoch']
         current_iter = resume_state['iter']
+        epoch_start_time = time.time()
     else:
         start_epoch = 0
         current_iter = 0
